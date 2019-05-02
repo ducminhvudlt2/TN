@@ -1,8 +1,9 @@
-from __future__ import division
-from __future__ import print_function
-import requests
+from __future__ import division, print_function
+
 import json
 import urllib
+
+import requests
 
 
 def create_data():
@@ -56,7 +57,6 @@ def create_distance_matrix(data):
 
 
 def send_request(origin_addresses, dest_addresses, API_key):
-  """ Build and send request for the given origin and destination addresses."""
   def build_address_str(addresses):
     # Build a pipe-separated string of addresses
     address_str = ''
@@ -93,7 +93,6 @@ def build_distance_matrix(response):
 
 
 def main():
-  """Entry point of the program"""
   # Create the data.
   data = create_data()
   addresses = data['addresses']

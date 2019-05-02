@@ -1,11 +1,14 @@
-import tensorflow as tf
-import numpy as np
 import time
-from shared.embeddings import LinearEmbedding
+
+import numpy as np
+import tensorflow as tf
+
 from shared.decode_step import RNNDecodeStep
+from shared.embeddings import LinearEmbedding
+
 
 class RLAgent(object):
-    
+
     def __init__(self,
                 args,
                 prt,
@@ -16,38 +19,23 @@ class RLAgent(object):
                 clAttentionCritic,
                 is_train=True,
                 _scope=''):
-        '''
-        This class builds the model and run testt and train.
-        Inputs:
-            args: arguments. See the description in config.py file.
-            prt: print controller which writes logs to a file.
-            env: an instance of the environment.
-            dataGen: a data generator which generates data for test and training.
-            reward_func: the function which is used for computing the reward. In the 
-                        case of TSP and VRP, it returns the tour length.
-            clAttentionActor: Attention mechanism that is used in actor.
-            clAttentionCritic: Attention mechanism that is used in critic.
-            is_train: if true, the agent is used for training; else, it is used only 
-                        for inference.
-        '''
-        
         self.args = args
         self.prt = prt
         self.env = env
         self.dataGen = dataGen
         self.reward_func = reward_func
         self.clAttentionCritic = clAttentionCritic
-        
+
         self.embedding = LinearEmbedding(args['embedding_dim'],
             _scope=_scope+'Actor/')
         self.decodeStep = RNNDecodeStep(clAttentionActor,
-                        args['hidden_dim'], 
+                        args['hidden_dim'],
                         use_tanh=args['use_tanh'],
                         tanh_exploration=args['tanh_exploration'],
                         n_glimpses=args['n_glimpses'],
-                        mask_glimpses=args['mask_glimpses'], 
-                        mask_pointer=args['mask_pointer'], 
-                        forget_bias=args['forget_bias'], 
+                        mask_glimpses=args['mask_glimpses'],
+                        mask_pointer=args['mask_pointer'],
+                        forget_bias=args['forget_bias'],
                         rnn_layers=args['rnn_layers'],
                         _scope='Actor/')
         self.decoder_input = tf.get_variable('decoder_input', [1,1,args['embedding_dim']],
@@ -66,10 +54,10 @@ class RLAgent(object):
 
         self.saver = tf.train.Saver(
             var_list=tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES))
-            
-        
+
+
     def build_model(self, decode_type = "greedy"):
-        
+
         # builds the model
         args = self.args
         env = self.env
@@ -82,9 +70,9 @@ class RLAgent(object):
 
         if decode_type == 'greedy' or decode_type == 'stochastic':
             beam_width = 1
-        elif decode_type == 'beam_search': 
+        elif decode_type == 'beam_search':
             beam_width = args['beam_width']
-            
+
         # reset the env. The environment is modified to handle beam_search decoding.
         env.reset(beam_width)
 
@@ -106,7 +94,7 @@ class RLAgent(object):
         initial_state = tf.zeros([args['rnn_layers'], 2, batch_size*beam_width, args['hidden_dim']])
         l = tf.unstack(initial_state, axis=0)
         decoder_state = tuple([tf.nn.rnn_cell.LSTMStateTuple(l[idx][0],l[idx][1])
-                  for idx in range(args['rnn_layers'])])            
+                  for idx in range(args['rnn_layers'])])
 
         # start from depot in VRP and from a trainable nodes in TSP
         # decoder_input: [batch_size*beam_width x 1 x hidden_dim]
@@ -114,13 +102,13 @@ class RLAgent(object):
             # decoder_input: [batch_size*beam_width x 1 x hidden_dim]
             decoder_input = tf.tile(self.decoder_input, [batch_size* beam_width,1,1])
         elif args['task_name'] == 'vrp':
-            decoder_input = tf.tile(tf.expand_dims(encoder_emb_inp[:,env.n_nodes-1], 1), 
+            decoder_input = tf.tile(tf.expand_dims(encoder_emb_inp[:,env.n_nodes-1], 1),
                                     [beam_width,1,1])
 
         # decoding loop
         context = tf.tile(encoder_emb_inp,[beam_width,1,1])
         for i in range(args['decode_len']):
-            
+
             logit, prob, logprob, decoder_state = self.decodeStep.step(decoder_input,
                                 context,
                                 env,
@@ -177,7 +165,7 @@ class RLAgent(object):
                 topk_logprob_ind = tf.transpose(tf.reshape(
                     tf.transpose(topk_logprob_ind), [1,-1]))
 
-                #idx,beam_parent: [batch_size*beam_width x 1]                               
+                #idx,beam_parent: [batch_size*beam_width x 1]
                 idx = tf.cast(topk_logprob_ind % env.n_nodes, tf.int64) # Which city in route.
                 beam_parent = tf.cast(topk_logprob_ind // env.n_nodes, tf.int64) # Which hypothesis it came from.
 
@@ -198,7 +186,7 @@ class RLAgent(object):
             logprob = tf.log(tf.gather_nd(prob, batched_idx))
             probs.append(prob)
             idxs.append(idx)
-            logprobs.append(logprob)           
+            logprobs.append(logprob)
 
             action = tf.gather_nd(tf.tile(input_pnt, [beam_width,1,1]), batched_idx )
             actions_tmp.append(action)
@@ -213,10 +201,10 @@ class RLAgent(object):
                 tmpind += [tf.gather_nd(
                     (batchBeamSeq + tf.cast(batch_size,tf.int64)*beam_path[k]),tmpind[-1])]
             actions = tmplst
-        else: 
+        else:
             actions = actions_tmp
 
-        R = self.reward_func(actions)            
+        R = self.reward_func(actions)
 
         ### critic
         v = tf.constant(0)
@@ -248,13 +236,10 @@ class RLAgent(object):
 
 
         return (R, v, logprobs, actions, idxs, env.input_pnt , probs)
-    
+
     def build_train_step(self):
-        '''
-        This function returns a train_step op, in which by running it we proceed one training step.
-        '''
         args = self.args
-        
+
         R, v, logprobs, actions, idxs , batch , probs= self.train_summary
 
         v_nograd = tf.stop_gradient(v)
@@ -285,14 +270,14 @@ class RLAgent(object):
         actor_train_step = actor_optim.apply_gradients(clip_actor_gra_and_var)
         critic_train_step = critic_optim.apply_gradients(clip_critic_gra_and_var)
 
-        train_step = [actor_train_step, 
+        train_step = [actor_train_step,
                           critic_train_step ,
-                          actor_loss, 
+                          actor_loss,
                           critic_loss,
                           actor_gra_and_var,
                           critic_gra_and_var,
-                          R, 
-                          v, 
+                          R,
+                          v,
                           logprobs,
                           probs,
                           actions,
@@ -308,7 +293,7 @@ class RLAgent(object):
         latest_ckpt = tf.train.latest_checkpoint(self.args['load_path'])
         if latest_ckpt is not None:
             self.saver.restore(self.sess, latest_ckpt)
-            
+
     def evaluate_single(self,eval_type='greedy'):
         start_time = time.time()
         avg_reward = []
@@ -357,7 +342,7 @@ class RLAgent(object):
         self.prt.print_out("Finished evaluation with %d steps in %s." % (step\
                            ,time.strftime("%H:%M:%S", time.gmtime(end_time))))
 
-        
+
     def evaluate_batch(self,eval_type='greedy'):
         self.env.reset()
         if eval_type == 'greedy':
@@ -366,8 +351,8 @@ class RLAgent(object):
         elif eval_type == 'beam_search':
             summary = self.val_summary_beam
             beam_width = self.args['beam_width']
-            
-            
+
+
         data = self.dataGen.get_test_all()
         start_time = time.time()
         R, v, logprobs, actions,idxs, batch, _= self.sess.run(summary,
@@ -378,8 +363,8 @@ class RLAgent(object):
 
         end_time = time.time() - start_time
         self.prt.print_out('Average of {} in batch-mode: {} -- std {} -- time {} s'.format(eval_type,\
-            np.mean(R),np.sqrt(np.var(R)),end_time))        
-        
+            np.mean(R),np.sqrt(np.var(R)),end_time))
+
     def inference(self, infer_type='batch'):
         if infer_type == 'batch':
             self.evaluate_batch('greedy')

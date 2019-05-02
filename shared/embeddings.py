@@ -2,9 +2,6 @@ import tensorflow as tf
 
 
 class Embedding(object):
-    '''
-    This class is the base class for embedding the input graph.
-    '''
     def __init__(self,emb_type, embedding_dim):
         self.emb_type = emb_type
         self.embedding_dim = embedding_dim
@@ -14,16 +11,7 @@ class Embedding(object):
         pass
 
 class LinearEmbedding(Embedding):
-    '''
-    This class implements linear embedding. It is only a mapping 
-    to a higher dimensional space.
-    '''
     def __init__(self,embedding_dim,_scope=''):
-        '''
-        Input: 
-            embedding_dim: embedding dimension
-        '''
-
         super(LinearEmbedding,self).__init__('linear',embedding_dim)
         self.project_emb = tf.layers.Conv1D(embedding_dim,1,
             _scope=_scope+'Embedding/conv1d')

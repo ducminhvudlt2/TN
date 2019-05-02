@@ -1,12 +1,9 @@
-"""Vehicles Routing Problem (VRP)."""
-
 from __future__ import print_function
-from ortools.constraint_solver import routing_enums_pb2
-from ortools.constraint_solver import pywrapcp
+
+from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 
 
 def create_data_model():
-    """Stores the data for the problem."""
     data = {}
     data['distance_matrix'] = [
         [
@@ -84,7 +81,6 @@ def create_data_model():
 
 
 def print_solution(data, manager, routing, solution):
-    """Prints solution on console."""
     max_route_distance = 0
     for vehicle_id in range(data['num_vehicles']):
         index = routing.Start(vehicle_id)
@@ -106,7 +102,6 @@ def print_solution(data, manager, routing, solution):
 
 
 def main():
-    """Solve the CVRP problem."""
     # Instantiate the data problem.
     data = create_data_model()
 
@@ -120,7 +115,6 @@ def main():
 
     # Create and register a transit callback.
     def distance_callback(from_index, to_index):
-        """Returns the distance between the two nodes."""
         # Convert from routing variable Index to distance matrix NodeIndex.
         from_node = manager.IndexToNode(from_index)
         to_node = manager.IndexToNode(to_index)

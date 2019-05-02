@@ -1,7 +1,7 @@
 import tensorflow as tf
 
+
 class Attention(object):
-    """A generic attention module for a decoder in seq2seq models"""
     def __init__(self, dim, use_tanh=False, C=10,_name='Attention',_scope=''):
         self.use_tanh = use_tanh
         self._scope = _scope
@@ -17,34 +17,22 @@ class Attention(object):
         self.tanh = tf.nn.tanh
 
     def __call__(self, query, ref, *args, **kwargs):
-        """
-        This function gets a query tensor and ref rensor and returns the logit op.
-        Args: 
-            query: is the hidden state of the decoder at the current
-                time step. [batch_size x dim]
-            ref: the set of hidden states from the encoder. 
-                [batch_size x max_time x dim]
-
-        Returns:
-            e: convolved ref with shape [batch_size x max_time x dim]
-            logits: [batch_size x max_time]
-        """
         # expanded_q,e: [batch_size x max_time x dim]
         e = self.project_ref(ref)
         q = self.project_query(query) #[batch_size x dim]
         expanded_q = tf.tile(tf.expand_dims(q,1),[1,tf.shape(e)[1],1])
 
         # v_view:[batch_size x dim x 1]
-        v_view = tf.tile( self.v, [tf.shape(e)[0],1,1]) 
-        
-        # u : [batch_size x max_time x dim] * [batch_size x dim x 1] = 
+        v_view = tf.tile( self.v, [tf.shape(e)[0],1,1])
+
+        # u : [batch_size x max_time x dim] * [batch_size x dim x 1] =
         #       [batch_size x max_time]
         u = tf.squeeze(tf.matmul(self.tanh(expanded_q + e), v_view),2)
 
         if self.use_tanh:
             logits = self.C * self.tanh(u)
         else:
-            logits = u  
+            logits = u
 
         return e, logits
 

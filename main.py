@@ -4,17 +4,13 @@ import time
 
 import numpy as np
 import tensorflow as tf
-from tqdm import tqdm
-
 from configs import ParseParams
 from model.attention_agent import RLAgent
 from shared.decode_step import RNNDecodeStep
+from tqdm import tqdm
 
 
 def load_task_specific_components(task):
-    '''
-    This function load task-specific libraries
-    '''
     if task == 'tsp':
         from TSP.tsp_utils import DataGenerator, Env ,reward_func
         from shared.attention import Attention

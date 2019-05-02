@@ -1,4 +1,3 @@
-# Code referenced from https://gist.github.com/gyglim/1f8dfb1b5c82627ae3efcfbbadb9f514
 from __future__ import print_function
 
 import json
@@ -7,11 +6,11 @@ import os
 import sys
 import time
 from datetime import datetime
-import numpy as np
 
-import tensorflow as tf
 import numpy as np
-import scipy.misc 
+import scipy.misc
+import tensorflow as tf
+
 try:
     from StringIO import StringIO  # Python 2.7
 except ImportError:
@@ -26,7 +25,6 @@ class printOut(object):
     self.stdout_print = stdout_print
 
   def print_out(self, s, new_line=True):
-    """Similar to print but with support to flush and output to a file."""
     if isinstance(s, bytes):
       s = s.decode("utf-8")
 
@@ -44,7 +42,6 @@ class printOut(object):
       sys.stdout.flush()
 
   def print_time(self,s, start_time):
-    """Take a start time, print elapsed duration, and return a new time."""
     self.print_out("%s, time %ds, %s." % (s, (time.time() - start_time) +"  " +str(time.ctime()) ))
     return time.time()
 
@@ -73,7 +70,7 @@ def to_np(x):
 def to_vars(x):
     if torch.cuda.is_available():
         x = x.cuda()
-    return Variable(x)   
+    return Variable(x)
 
 #  for extracting the gradients
 def extract(xVar):
@@ -83,23 +80,20 @@ def extract(xVar):
 
 def extract_norm(xVar):
   global yGrad
-  yGradNorm = xVar.norm() 
+  yGradNorm = xVar.norm()
   print(yGradNorm)
 
 # tensorboard logger
 class Logger(object):
-    
+
     def __init__(self, log_dir):
-        """Create a summary writer logging to log_dir."""
         self.writer = tf.summary.FileWriter(log_dir)
 
     def scalar_summary(self, tag, value, step):
-        """Log a scalar variable."""
         summary = tf.Summary(value=[tf.Summary.Value(tag=tag, simple_value=value)])
         self.writer.add_summary(summary, step)
 
     def image_summary(self, tag, images, step):
-        """Log a list of images."""
 
         img_summaries = []
         for i, img in enumerate(images):
@@ -120,9 +114,8 @@ class Logger(object):
         # Create and write Summary
         summary = tf.Summary(value=img_summaries)
         self.writer.add_summary(summary, step)
-        
+
     def histo_summary(self, tag, values, step, bins=1000):
-        """Log a histogram of the tensor of values."""
 
         # Create a histogram using numpy
         counts, bin_edges = np.histogram(values, bins=bins)
@@ -152,7 +145,6 @@ class Logger(object):
 
 def _single_cell(unit_type, num_units, forget_bias, dropout, prt,
                                  residual_connection=False, device_str=None):
-    """Create an instance of a single RNN cell."""
     # dropout (= 1 - keep_prob) is set to 0 during eval and infer
 
     # Cell Type
@@ -190,7 +182,6 @@ def _single_cell(unit_type, num_units, forget_bias, dropout, prt,
 
 def _cell_list(unit_type, num_units, num_layers, num_residual_layers,
                              forget_bias, dropout, mode, prt, num_gpus, base_gpu=0):
-    """Create a list of RNN cells."""
     # Multi-GPU
     cell_list = []
     for i in range(num_layers):
@@ -213,28 +204,6 @@ def _cell_list(unit_type, num_units, num_layers, num_residual_layers,
 
 def create_rnn_cell(unit_type, num_units, num_layers, num_residual_layers,
                                         forget_bias, dropout, mode, prt , num_gpus, base_gpu=0):
-    """Create multi-layer RNN cell.
-
-    Args:
-        unit_type: string representing the unit type, i.e. "lstm".
-        num_units: the depth of each unit.
-        num_layers: number of cells.
-        num_residual_layers: Number of residual layers from top to bottom. For
-            example, if `num_layers=4` and `num_residual_layers=2`, the last 2 RNN
-            cells in the returned list will be wrapped with `ResidualWrapper`.
-        forget_bias: the initial forget bias of the RNNCell(s).
-        dropout: floating point value between 0.0 and 1.0:
-            the probability of dropout.  this is ignored if `mode != TRAIN`.
-        mode: either tf.contrib.learn.TRAIN/EVAL/INFER
-        num_gpus: The number of gpus to use when performing round-robin
-            placement of layers.
-        base_gpu: The gpu device id to use for the first RNN cell in the
-            returned list. The i-th RNN cell will use `(base_gpu + i) % num_gpus`
-            as its device id.
-
-    Returns:
-        An `RNNCell` instance.
-    """
 
     cell_list = _cell_list(unit_type=unit_type,
                              num_units=num_units,
@@ -253,7 +222,6 @@ def create_rnn_cell(unit_type, num_units, num_layers, num_residual_layers,
         return tf.contrib.rnn.MultiRNNCell(cell_list)
 
 def gradient_clip(gradients, params, max_gradient_norm):
-    """Clipping gradients of a model."""
     clipped_gradients, gradient_norm = tf.clip_by_global_norm(
             gradients, max_gradient_norm)
     gradient_norm_summary = [tf.summary.scalar("grad_norm", gradient_norm)]
@@ -263,7 +231,6 @@ def gradient_clip(gradients, params, max_gradient_norm):
     return clipped_gradients, gradient_norm_summary
 
 def create_or_load_model(model, model_dir, session, out_dir, name):
-    """Create translation model and initialize or load parameters in session."""
     start_time = time.time()
     latest_ckpt = tf.train.latest_checkpoint(model_dir)
     if latest_ckpt:
@@ -278,25 +245,20 @@ def create_or_load_model(model, model_dir, session, out_dir, name):
 
     global_step = model.global_step.eval(session=session)
     return model, global_step
-    
+
 def get_device_str(device_id, num_gpus):
-    """Return a device string for multi-GPU setup."""
     if num_gpus == 0:
         return "/cpu:0"
     device_str_output = "/gpu:%d" % (device_id % num_gpus)
     return device_str_output
 
 def add_summary(summary_writer, global_step, tag, value):
-    """Add a new summary to the current summary_writer.
-    Useful to log things that are not part of the training graph, e.g., tag=BLEU.
-    """
     summary = tf.Summary(value=[tf.Summary.Value(tag=tag, simple_value=value)])
     summary_writer.add_summary(summary, global_step)
 
 
 def get_config_proto(log_device_placement=False, allow_soft_placement=True):
     # GPU options:
-    # https://www.tensorflow.org/versions/r0.10/how_tos/using_gpu/index.html
     config_proto = tf.ConfigProto(
             log_device_placement=log_device_placement,
             allow_soft_placement=allow_soft_placement)
@@ -308,14 +270,13 @@ def check_tensorflow_version():
         raise EnvironmentError("Tensorflow version must >= 1.2.1")
 
 def debug_tensor(s, msg=None, summarize=10):
-    """Print the shape and value of a tensor at test time. Return a new tensor."""
     if not msg:
         msg = s.name
     return tf.Print(s, [tf.shape(s), s], msg + " ", summarize=summarize)
 
 def tf_print(tensor, transform=None):
 
-    # Insert a custom python operation into the graph that does nothing but print a tensors value 
+    # Insert a custom python operation into the graph that does nothing but print a tensors value
     def print_tensor(x):
         # x is typically a numpy array here so you could do anything you want with it,
         # but adding a transformation of some kind usually makes the output more digestible
