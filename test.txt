@@ -1,0 +1,182 @@
+﻿[datacamp] λ python main.py --task=vrp10 --is_train=False --infer_type=single --model_dir=.\logs\vrp10-2019-04-08_04-49-28\model\
+actor_net_lr: 0.0001
+agent_type: attention
+batch_size: 128
+beam_width: 10
+capacity: 20
+critic_net_lr: 0.0001
+data_dir: data
+decode_len: 16
+demand_max: 9
+disable_tqdm: True
+dropout: 0.1
+embedding_dim: 128
+entropy_coeff: 0.0
+forget_bias: 1.0
+gpu: 3
+hidden_dim: 128
+infer_type: single
+input_dim: 3
+is_train: False
+load_path:
+log_dir: logs/vrp10-2019-04-09_01-12-57
+log_interval: 200
+mask_glimpses: True
+mask_pointer: True
+max_grad_norm: 2.0
+model_dir: .\logs\vrp10-2019-04-08_04-49-28\model\
+n_cust: 10
+n_glimpses: 0
+n_nodes: 11
+n_process_blocks: 3
+n_train: 260000
+random_seed: 24601
+rnn_layers: 1
+save_interval: 10000
+stdout_print: True
+tanh_exploration: 10.0
+task: vrp10
+task_name: vrp
+test_interval: 200
+test_size: 1000
+use_tanh: False
+# Set random seed to 24601
+2019-04-09 01:12:57.973027: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX AVX2
+2019-04-09 01:12:59.299562: E tensorflow/stream_executor/cuda/cuda_driver.cc:300] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2019-04-09 01:12:59.366175: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:161] retrieving CUDA diagnostic information for host: HDMV
+2019-04-09 01:12:59.399956: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:168] hostname: HDMV
+Created train iterator.
+Loading dataset for vrp-size-1000-len-11-test.txt...
+
+WARNING: The TensorFlow contrib module will not be included in TensorFlow 2.0.
+For more information, please see:
+  * https://github.com/tensorflow/community/blob/master/rfcs/20180907-contrib-sunset.md
+  * https://github.com/tensorflow/addons
+If you depend on functionality not listed there, please file an issue.
+
+WARNING:tensorflow:From D:\Anaconda3\envs\datacamp\lib\site-packages\tensorflow\python\framework\op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING:tensorflow:From D:\Cao hoc\6.DoAn3\Code thuyet trinh\VRP-RL\shared\decode_step.py:176: BasicLSTMCell.__init__ (from tensorflow.python.ops.rnn_cell_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+This class is equivalent as tf.keras.layers.LSTMCell, and will be replaced by that in Tensorflow 2.0.
+WARNING:tensorflow:From D:\Cao hoc\6.DoAn3\Code thuyet trinh\VRP-RL\shared\decode_step.py:180: MultiRNNCell.__init__ (from tensorflow.python.ops.rnn_cell_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+This class is equivalent as tf.keras.layers.StackedRNNCells, and will be replaced by that in Tensorflow 2.0.
+WARNING:tensorflow:From D:\Cao hoc\6.DoAn3\Code thuyet trinh\VRP-RL\shared\decode_step.py:214: dynamic_rnn (from tensorflow.python.ops.rnn) is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `keras.layers.RNN(cell)`, which is equivalent to this API
+WARNING:tensorflow:From D:\Anaconda3\envs\datacamp\lib\site-packages\tensorflow\python\ops\rnn_cell_impl.py:1259: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`.
+It took 15.988715171813965s to build the agent.
+Evaluation started ...
+
+
+Val-Step of greedy: 0
+
+Example test input: [[0.39188915, 0.6204959], [0.74632937, 0.76435804], [0.9796736, 0.39036557], [0.5621101, 0.9073347], [0.543051, 0.103109054], [0.94108874, 0.19921248], [0.27434537, 0.7890164], [0.96881443, 0.85726005], [0.599985, 0.5510349], [0.6892647, 0.5528635], [0.083855, 0.97440565]]
+
+Example test output: [[0.27434537, 0.7890164], [0.083855, 0.97440565], [0.74632937, 0.76435804], [0.083855, 0.97440565], [0.6892647, 0.5528635], [0.083855, 0.97440565], [0.39188915, 0.6204959], [0.083855, 0.97440565], [0.5621101, 0.9073347], [0.083855, 0.97440565], [0.9796736, 0.39036557], [0.083855, 0.97440565], [0.96881443, 0.85726005], [0.083855, 0.97440565], [0.543051, 0.103109054], [0.083855, 0.97440565]]
+
+Example test reward: 11.195173263549805 - best: 0
+
+
+Val-Step of greedy: 200
+
+Example test input: [[0.6058568, 0.53007925], [0.68925315, 0.035227347], [0.734899, 0.17283483], [0.012703346, 0.698426], [0.48162925, 0.3391978], [0.8427148, 0.43586048], [0.29212874, 0.099181324], [0.105069965, 0.99974656], [0.26340488, 0.82283366], [0.91978765, 0.46198368], [0.20550367, 0.127117]]
+
+Example test output: [[0.105069965, 0.99974656], [0.012703346, 0.698426], [0.734899, 0.17283483], [0.20550367, 0.127117], [0.29212874, 0.099181324], [0.20550367, 0.127117], [0.26340488, 0.82283366], [0.20550367, 0.127117], [0.68925315, 0.035227347], [0.20550367, 0.127117], [0.6058568, 0.53007925], [0.20550367, 0.127117], [0.91978765, 0.46198368], [0.20550367, 0.127117], [0.48162925, 0.3391978], [0.20550367, 0.127117]]
+
+Example test reward: 8.591375350952148 - best: 0
+
+
+Val-Step of greedy: 400
+
+Example test input: [[0.8959226, 0.030683525], [0.6541895, 0.69883585], [0.059649196, 0.009528127], [0.41980088, 0.34775963], [0.19322479, 0.47991443], [0.2796731, 0.17223671], [0.9837199, 0.6553442], [0.58734053, 0.096595205], [0.6723099, 0.051894262], [0.99339837, 0.8841111], [0.4006987, 0.6711677]]
+
+Example test output: [[0.2796731, 0.17223671], [0.4006987, 0.6711677], [0.99339837, 0.8841111], [0.4006987, 0.6711677], [0.8959226, 0.030683525], [0.4006987, 0.6711677], [0.41980088, 0.34775963], [0.4006987, 0.6711677], [0.6541895, 0.69883585], [0.4006987, 0.6711677], [0.9837199, 0.6553442], [0.4006987, 0.6711677], [0.059649196, 0.009528127], [0.4006987, 0.6711677], [0.19322479, 0.47991443], [0.4006987, 0.6711677]]
+
+Example test reward: 8.28309440612793 - best: 0
+
+
+Val-Step of greedy: 600
+
+Example test input: [[0.031288426, 0.7440087], [0.5311111, 0.33018315], [0.06753353, 0.14213505], [0.40617192, 0.6749059], [0.31604534, 0.41690874], [0.18624589, 0.25869754], [0.29678947, 0.19735223], [0.020642905, 0.6612497], [0.23714381, 0.36438575], [0.16111457, 0.32585534], [0.18294136, 0.114591196]]
+
+Example test output: [[0.31604534, 0.41690874], [0.16111457, 0.32585534], [0.18624589, 0.25869754], [0.18294136, 0.114591196], [0.5311111, 0.33018315], [0.23714381, 0.36438575], [0.18294136, 0.114591196], [0.40617192, 0.6749059], [0.29678947, 0.19735223], [0.18294136, 0.114591196], [0.020642905, 0.6612497], [0.18294136, 0.114591196], [0.06753353, 0.14213505], [0.18294136, 0.114591196], [0.031288426, 0.7440087], [0.18294136, 0.114591196]]
+
+Example test reward: 5.593409538269043 - best: 0
+
+
+Val-Step of greedy: 800
+
+Example test input: [[0.46644995, 0.8612643], [0.34602967, 0.35956678], [0.3967168, 0.5359887], [0.28964517, 0.8892131], [0.41304752, 0.62460494], [0.7513405, 0.9537257], [0.06173477, 0.8089942], [0.16529104, 0.58949727], [0.044075806, 0.7860907], [0.8990508, 0.63531804], [0.089672185, 0.66091925]]
+
+Example test output: [[0.044075806, 0.7860907], [0.089672185, 0.66091925], [0.3967168, 0.5359887], [0.089672185, 0.66091925], [0.41304752, 0.62460494], [0.089672185, 0.66091925], [0.28964517, 0.8892131], [0.089672185, 0.66091925], [0.46644995, 0.8612643], [0.089672185, 0.66091925], [0.7513405, 0.9537257], [0.089672185, 0.66091925], [0.34602967, 0.35956678], [0.089672185, 0.66091925], [0.06173477, 0.8089942], [0.089672185, 0.66091925]]
+
+Example test reward: 5.5804524421691895 - best: 0
+
+Validation overall avg_reward: 7.972019672393799
+Validation overall reward std: 1.704235553741455
+Finished evaluation with 999 steps in 00:00:13.
+2019-04-09 01:13:58.834191: W .\tensorflow/core/grappler/optimizers/graph_optimizer_stage.h:241] Failed to run optimizer ArithmeticOptimizer, stage RemoveStackStridedSliceSameAxis node strided_slice_117. Error: ValidateStridedSliceOp returned partial shapes [1,?,?] and [?,?]
+2019-04-09 01:13:58.898064: W .\tensorflow/core/grappler/optimizers/graph_optimizer_stage.h:241] Failed to run optimizer ArithmeticOptimizer, stage RemoveStackStridedSliceSameAxis node strided_slice_118. Error: ValidateStridedSliceOp returned partial shapes [15,?,?] and [15,?,?]
+2019-04-09 01:13:59.581918: W .\tensorflow/core/grappler/optimizers/graph_optimizer_stage.h:241] Failed to run optimizer ArithmeticOptimizer, stage RemoveStackStridedSliceSameAxis node strided_slice_117. Error: ValidateStridedSliceOp returned partial shapes [1,?,?] and [?,?]
+2019-04-09 01:13:59.643806: W .\tensorflow/core/grappler/optimizers/graph_optimizer_stage.h:241] Failed to run optimizer ArithmeticOptimizer, stage RemoveStackStridedSliceSameAxis node strided_slice_118. Error: ValidateStridedSliceOp returned partial shapes [15,?,?] and [15,?,?]
+
+
+Val-Step of beam_search: 0
+
+Example test input: [[0.39188915, 0.6204959], [0.74632937, 0.76435804], [0.9796736, 0.39036557], [0.5621101, 0.9073347], [0.543051, 0.103109054], [0.94108874, 0.19921248], [0.27434537, 0.7890164], [0.96881443, 0.85726005], [0.599985, 0.5510349], [0.6892647, 0.5528635], [0.083855, 0.97440565]]
+
+Example test output: [[0.6892647, 0.5528635], [0.27434537, 0.7890164], [0.083855, 0.97440565], [0.74632937, 0.76435804], [0.083855, 0.97440565], [0.9796736, 0.39036557], [0.083855, 0.97440565], [0.5621101, 0.9073347], [0.083855, 0.97440565], [0.39188915, 0.6204959], [0.083855, 0.97440565], [0.543051, 0.103109054], [0.083855, 0.97440565], [0.96881443, 0.85726005], [0.083855, 0.97440565], [0.94108874, 0.19921248]]
+
+Example test reward: [11.521259 11.52126  11.52126  11.521259 11.52126  11.765558 11.52126
+ 11.765558 11.52126  11.52126 ] - best: 0
+
+
+Val-Step of beam_search: 200
+
+Example test input: [[0.6058568, 0.53007925], [0.68925315, 0.035227347], [0.734899, 0.17283483], [0.012703346, 0.698426], [0.48162925, 0.3391978], [0.8427148, 0.43586048], [0.29212874, 0.099181324], [0.105069965, 0.99974656], [0.26340488, 0.82283366], [0.91978765, 0.46198368], [0.20550367, 0.127117]]
+
+Example test output: [[0.29212874, 0.099181324], [0.105069965, 0.99974656], [0.012703346, 0.698426], [0.91978765, 0.46198368], [0.20550367, 0.127117], [0.68925315, 0.035227347], [0.734899, 0.17283483], [0.20550367, 0.127117], [0.6058568, 0.53007925], [0.26340488, 0.82283366], [0.20550367, 0.127117], [0.48162925, 0.3391978], [0.20550367, 0.127117], [0.8427148, 0.43586048], [0.20550367, 0.127117], [0.20550367, 0.127117]]
+
+Example test reward: [8.050154 8.75947  8.050154 9.318072 9.318072 8.865777 9.025001 8.865777
+ 9.025001 9.318073] - best: 0
+
+
+Val-Step of beam_search: 400
+
+Example test input: [[0.8959226, 0.030683525], [0.6541895, 0.69883585], [0.059649196, 0.009528127], [0.41980088, 0.34775963], [0.19322479, 0.47991443], [0.2796731, 0.17223671], [0.9837199, 0.6553442], [0.58734053, 0.096595205], [0.6723099, 0.051894262], [0.99339837, 0.8841111], [0.4006987, 0.6711677]]
+
+Example test output: [[0.2796731, 0.17223671], [0.059649196, 0.009528127], [0.41980088, 0.34775963], [0.6541895, 0.69883585], [0.4006987, 0.6711677], [0.99339837, 0.8841111], [0.4006987, 0.6711677], [0.8959226, 0.030683525], [0.4006987, 0.6711677], [0.9837199, 0.6553442], [0.4006987, 0.6711677], [0.19322479, 0.47991443], [0.4006987, 0.6711677], [0.6723099, 0.051894262], [0.4006987, 0.6711677], [0.58734053, 0.096595205]]
+
+Example test reward: [9.189784 9.189784 8.766974 9.189784 8.766974 9.184399 9.184399 9.257548
+ 8.327868 9.257548] - best: 8
+
+
+Val-Step of beam_search: 600
+
+Example test input: [[0.031288426, 0.7440087], [0.5311111, 0.33018315], [0.06753353, 0.14213505], [0.40617192, 0.6749059], [0.31604534, 0.41690874], [0.18624589, 0.25869754], [0.29678947, 0.19735223], [0.020642905, 0.6612497], [0.23714381, 0.36438575], [0.16111457, 0.32585534], [0.18294136, 0.114591196]]
+
+Example test output: [[0.31604534, 0.41690874], [0.23714381, 0.36438575], [0.16111457, 0.32585534], [0.18624589, 0.25869754], [0.29678947, 0.19735223], [0.18294136, 0.114591196], [0.5311111, 0.33018315], [0.18294136, 0.114591196], [0.40617192, 0.6749059], [0.18294136, 0.114591196], [0.020642905, 0.6612497], [0.18294136, 0.114591196], [0.06753353, 0.14213505], [0.18294136, 0.114591196], [0.031288426, 0.7440087], [0.18294136, 0.114591196]]
+
+Example test reward: [5.5471845 5.6777053 5.5471845 5.715115  5.6777053 5.7151155 5.6397014
+ 5.6397014 5.5471845 5.5471845] - best: 0
+
+
+Val-Step of beam_search: 800
+
+Example test input: [[0.46644995, 0.8612643], [0.34602967, 0.35956678], [0.3967168, 0.5359887], [0.28964517, 0.8892131], [0.41304752, 0.62460494], [0.7513405, 0.9537257], [0.06173477, 0.8089942], [0.16529104, 0.58949727], [0.044075806, 0.7860907], [0.8990508, 0.63531804], [0.089672185, 0.66091925]]
+
+Example test output: [[0.3967168, 0.5359887], [0.044075806, 0.7860907], [0.7513405, 0.9537257], [0.089672185, 0.66091925], [0.41304752, 0.62460494], [0.089672185, 0.66091925], [0.46644995, 0.8612643], [0.089672185, 0.66091925], [0.28964517, 0.8892131], [0.089672185, 0.66091925], [0.34602967, 0.35956678], [0.089672185, 0.66091925], [0.06173477, 0.8089942], [0.089672185, 0.66091925], [0.16529104, 0.58949727], [0.089672185, 0.66091925]]
+
+Example test reward: [5.6261873 5.6261873 5.6261873 5.6261873 5.6261873 5.626187  5.626187
+ 5.6261873 5.6261873 5.6261873] - best: 5
+
+Validation overall avg_reward: 7.61684513092041
+Validation overall reward std: 1.6033509969711304
+Finished evaluation with 999 steps in 00:00:22.
+##################################################################
+Total time is 00:00:35
